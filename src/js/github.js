@@ -589,7 +589,7 @@ const repoComponent = (repo, categoryClass) => (
   <div className={`col-md-4 col-sm-6 gallery-grid ${categoryClass}`}>
     <div className="gallery-single fix">
       <div className="portfolio-date">
-        <i className="fas fa-pen">{readableDate(repo.createdAt)}</i>
+        <i className="fas fa-pen">&nbsp;{readableDate(repo.createdAt)}</i>
       </div>
       <div>
         <h3 className="portfolio-name">
@@ -597,7 +597,7 @@ const repoComponent = (repo, categoryClass) => (
         </h3>
         <p className="portfolio-description">{repo.description}</p>
         <div className="portfolio-language">
-          <i className="fas fa-laptop-code">{repo.language}</i>
+          <i className="fas fa-laptop-code">&nbsp;{repo.language}</i>
         </div>
       </div>
     </div>
