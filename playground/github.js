@@ -21,7 +21,8 @@ const options = {
   },
 };
 
-const getOwned = repo => !repo.archived && !repo.fork;
+const getOwned = repo =>
+  !repo.archived && !repo.fork && repo.owner.login === USERNAME;
 const getForked = repo => repo.fork && !repo.archived;
 
 const fetchTopics = repoName => {
@@ -55,23 +56,20 @@ const getAllRepos = async () => {
         pageNum = 0;
       });
   }
+  // const allRepos = JSON.parse(
+  //   fs.readFileSync('playground/allRepos.json', 'utf-8')
+  // );
   return allRepos;
 };
 
-const writeAllRepos = repos =>
-  fs.writeFileSync('playground/allRepos.json', JSON.stringify(repos));
-const writeAllTopics = repoTopics =>
-  fs.writeFileSync('playground/allTopics.json', JSON.stringify(repoTopics));
-
-(async () => {
-  console.group('repos');
-  let allRepos = await getAllRepos();
-  writeAllRepos(allRepos);
-  const repos = JSON.parse(
-    fs.readFileSync('playground/allRepos.json', 'utf-8')
-  );
-  const forkedRepos = repos.filter(getForked);
-  const ownedRepos = repos.filter(getOwned);
+const getForkedRepos = repos =>
+  repos.filter(getForked).map(repo => ({
+    name: repo.name,
+    description: repo.description,
+    createdAt: repo.created_at,
+    language: repo.language,
+  }));
+const getRepoTopics = async repos => {
   const repoTopics = {};
   for (let repo of ownedRepos) {
     await fetchTopics(repo.name)
@@ -82,8 +80,57 @@ const writeAllTopics = repoTopics =>
       .catch(console.error);
   }
   writeAllTopics(repoTopics);
-  console.log(forkedRepos.length);
-  console.log(ownedRepos.length);
+  // const repoTopics = JSON.parse(
+  //   fs.readFileSync('playground/allTopics.json', 'utf-8')
+  // );
+  return repoTopics;
+};
+const getOwnedReposInfo = (repos, repoTopics) => {
+  const learningRepos = [];
+  const projectRepos = [];
+  repos.forEach(repo => {
+    const topics = repoTopics[repo.name];
+    const repoObj = {
+      name: repo.name,
+      description: repo.description,
+      createdAt: repo.created_at,
+      language: repo.language,
+    };
+    if (topics.includes(CATEGORIES.projects)) {
+      projectRepos.push(repoObj);
+    } else {
+      learningRepos.push(repoObj);
+    }
+  });
+  return [projectRepos, learningRepos];
+};
+
+const writeAllRepos = repos =>
+  fs.writeFileSync('playground/allRepos.json', JSON.stringify(repos));
+const writeAllTopics = repoTopics =>
+  fs.writeFileSync('playground/allTopics.json', JSON.stringify(repoTopics));
+const writeRepos = repos =>
+  fs.writeFileSync('playground/repoInfos.json', JSON.stringify(repos));
+
+(async () => {
+  console.group('repos');
+  let allRepos = await getAllRepos();
+  writeAllRepos(allRepos);
+  const forkedRepos = getForkedRepos(allRepos);
+  const ownedRepos = allRepos.filter(getOwned);
+  const repoTopics = await getRepoTopics(ownedRepos);
+  const [projectRepos, learningRepos] = getOwnedReposInfo(
+    ownedRepos,
+    repoTopics
+  );
+  const categories = {
+    forkedRepos,
+    projectRepos,
+    learningRepos,
+  };
+  console.log(`Forked: ${categories.forkedRepos.length}`);
+  console.log(`Project: ${categories.projectRepos.length}`);
+  console.log(`Learning: ${categories.learningRepos.length}`);
+  writeRepos(categories);
   console.groupEnd('repos');
-  // created_at, description, language
 })();
