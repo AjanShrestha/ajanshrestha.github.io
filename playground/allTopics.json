@@ -1,4 +1,8 @@
 {
+  "game-development": ["game-development", "learning-by-doing"],
+  "tetris": ["game", "tetris", "javascript", "learning-by-doing"],
+  "learnGoWithTests": ["golang", "learning-by-doing"],
+  "Pro-HTML5-Games": ["game", "learning-by-doing"],
   "react-burger-builder": ["react", "learning-by-doing"],
   "digging-into-nodejs": ["nodejs", "javascript", "cli", "stream", "database", "webserver", "debugging", "child-process", "learning-by-doing", "fundamental-concepts", "streams", "database-persistence", "cli-programming"],
   "socket-chat-example": ["socket-io", "learning-by-doing", "javascript"],
@@ -56,11 +60,7 @@
   "BookListApp": ["javascript", "learning-by-doing"],
   "materialize-css": ["material-ui", "css", "learning-by-doing"],
   "amazonScraperv1": ["amazon", "python", "web-scraper", "learning-by-doing"],
-  "tetris": ["game", "tetris", "javascript", "learning-by-doing"],
   "sample_app": ["ruby", "learning-by-doing"],
-  "Pro-HTML5-Games": ["game", "learning-by-doing"],
-  "game-development": ["game-development", "learning-by-doing"],
-  "learnGoWithTests": ["golang", "learning-by-doing"],
   "tictactoe": ["tic-tac-toe", "game", "learning-by-doing"],
   "bitstarter": ["nodejs", "learning-by-doing"],
   "try_git": ["learning-by-doing", "git"]

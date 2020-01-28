@@ -189,7 +189,7 @@
     "url": "https://github.com/AjanShrestha/bitstarter"
   }, {
     "name": "learnGoWithTests",
-    "description": "Learning golang from https://quii.gitbook.io/learn-go-with-tests/",
+    "description": "Learning golang ",
     "createdAt": "2019-07-10T03:59:44Z",
     "language": "Go",
     "url": "https://github.com/AjanShrestha/learnGoWithTests"
@@ -201,19 +201,19 @@
     "url": "https://github.com/AjanShrestha/tictactoe"
   }, {
     "name": "game-development",
-    "description": "Based on [Introducing JavaScript Game Development](https://www.apress.com/gp/book/9781484232514)",
+    "description": "Based on Introducing JavaScript Game Development",
     "createdAt": "2019-07-20T04:28:35Z",
     "language": "JavaScript",
     "url": "https://github.com/AjanShrestha/game-development"
   }, {
     "name": "Pro-HTML5-Games",
-    "description": "Based on [Pro HTML5 Games](https://www.apress.com/in/book/9781484229095)",
+    "description": "Based on Pro HTML5 Games",
     "createdAt": "2019-07-29T15:13:49Z",
     "language": "JavaScript",
     "url": "https://github.com/AjanShrestha/Pro-HTML5-Games"
   }, {
     "name": "tetris",
-    "description": "Based on [Write a Tetris Game in Javascript](https://www.youtube.com/watch?v=H2aW5V46khA)",
+    "description": "Write a Tetris Game in Javascript",
     "createdAt": "2019-08-15T04:08:51Z",
     "language": "JavaScript",
     "url": "https://github.com/AjanShrestha/tetris"

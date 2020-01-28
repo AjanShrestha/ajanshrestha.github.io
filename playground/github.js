@@ -77,7 +77,7 @@ const getForkedRepos = repos => repos.filter(getForked).map(getRepoObj);
 const getRepoTopics = async repos => {
   let repoTopics = {};
   if (PRODUCTION) {
-    for (let repo of ownedRepos) {
+    for (let repo of repos) {
       await fetchTopics(repo.name)
         .then(res => res.json())
         .then(topic => {
