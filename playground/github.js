@@ -1,8 +1,17 @@
+require('dotenv').config();
 const fs = require('fs');
 
 const fetch = require('node-fetch');
 
 const USERNAME = 'AjanShrestha';
+const PASSWORD = process.env.PASSWORD;
+const authString = `${USERNAME}:${PASSWORD}`;
+const auth = 'Basic ' + Buffer.from(authString).toString('base64');
+const CATEGORIES = {
+  projects: 'project',
+  learnings: 'learning-by-doing',
+  forked: 'forked',
+};
 
 const options = {
   method: 'get',
@@ -12,10 +21,15 @@ const options = {
   },
 };
 
+const getOwned = repo => !repo.archived && !repo.fork;
+const getForked = repo => repo.fork && !repo.archived;
+
 const fetchTopics = repoName => {
-  const topicUrl = `https://api.github.com/users/${USERNAME}/${repoName}/topics`;
+  const topicUrl = `https://api.github.com/repos/${USERNAME}/${repoName}/topics`;
+  // console.log(topicUrl);
   options.headers.Accept = 'application/vnd.github.mercy-preview+json';
-  fetch();
+  options.headers.Authorization = auth;
+  return fetch(topicUrl, options);
 };
 
 const getAllRepos = async () => {
@@ -46,30 +60,30 @@ const getAllRepos = async () => {
 
 const writeAllRepos = repos =>
   fs.writeFileSync('playground/allRepos.json', JSON.stringify(repos));
+const writeAllTopics = repoTopics =>
+  fs.writeFileSync('playground/allTopics.json', JSON.stringify(repoTopics));
 
 (async () => {
   console.group('repos');
-  // let allRepos = await getAllRepos();
-  // writeAllRepos(allRepos);
+  let allRepos = await getAllRepos();
+  writeAllRepos(allRepos);
   const repos = JSON.parse(
     fs.readFileSync('playground/allRepos.json', 'utf-8')
   );
-  console.log(repos.length);
+  const forkedRepos = repos.filter(getForked);
+  const ownedRepos = repos.filter(getOwned);
+  const repoTopics = {};
+  for (let repo of ownedRepos) {
+    await fetchTopics(repo.name)
+      .then(res => res.json())
+      .then(topic => {
+        repoTopics[repo.name] = topic.names;
+      })
+      .catch(console.error);
+  }
+  writeAllTopics(repoTopics);
+  console.log(forkedRepos.length);
+  console.log(ownedRepos.length);
   console.groupEnd('repos');
+  // created_at, description, language
 })();
-
-// const repos = JSON.parse(fs.readFileSync('playground/allRepos.json', 'utf-8'));
-// console.log(repos.length);
-// const forked = repos.filter(repo => repo.fork);
-// console.log(`Forked: ${forked.length}`);
-// let languages = new Set();
-// repos.forEach(repo => languages.add(repo.language));
-// let languages = new Array();
-// repos.forEach(repo => languages.push(repo.language));
-// console.log(`Languages: ${languages.length}`);
-// console.log(languages);
-
-// let descriptions = new Array();
-// repos.forEach(repo => descriptions.push(repo.description));
-// console.log(`Descriptions: ${descriptions.length}`);
-// console.log(descriptions);
