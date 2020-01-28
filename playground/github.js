@@ -77,7 +77,7 @@ const getForkedRepos = repos => repos.filter(getForked).map(getRepoObj);
 const getRepoTopics = async repos => {
   let repoTopics = {};
   if (PRODUCTION) {
-  for (let repo of ownedRepos) {
+    for (let repo of ownedRepos) {
       await fetchTopics(repo.name)
         .then(res => res.json())
         .then(topic => {
@@ -127,9 +127,15 @@ const writeRepos = repos =>
     repoTopics
   );
   const categories = {
-    forkedRepos,
-    projectRepos,
-    learningRepos,
+    forkedRepos: forkedRepos.sort(
+      (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+    ),
+    projectRepos: projectRepos.sort(
+      (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+    ),
+    learningRepos: learningRepos.sort(
+      (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+    ),
   };
   console.log(`Forked: ${categories.forkedRepos.length}`);
   console.log(`Project: ${categories.projectRepos.length}`);
