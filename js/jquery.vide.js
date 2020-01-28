@@ -15,7 +15,6 @@
     factory(root.jQuery);
   }
 })(this, function($) {
-
   'use strict';
 
   /**
@@ -42,7 +41,7 @@
     posterType: 'detect',
     resizing: true,
     bgColor: 'transparent',
-    className: ''
+    className: '',
   };
 
   /**
@@ -70,7 +69,10 @@
     var i;
 
     // Remove spaces around delimiters and split
-    arr = str.replace(/\s*:\s*/g, ':').replace(/\s*,\s*/g, ',').split(',');
+    arr = str
+      .replace(/\s*:\s*/g, ':')
+      .replace(/\s*,\s*/g, ',')
+      .split(',');
 
     // Parse a string
     for (i = 0, len = arr.length; i < len; i++) {
@@ -158,7 +160,7 @@
       }
     }
 
-    return { x: x, y: y };
+    return {x: x, y: y};
   }
 
   /**
@@ -257,7 +259,7 @@
         'background-size': 'cover',
         'background-color': settings.bgColor,
         'background-repeat': 'no-repeat',
-        'background-position': position.x + ' ' + position.y
+        'background-position': position.x + ' ' + position.y,
       });
 
     // Get a poster path
@@ -281,7 +283,10 @@
         $wrapper.css('background-image', 'url(' + url + ')');
       });
     } else if (posterType !== 'none') {
-      $wrapper.css('background-image', 'url(' + poster + '.' + posterType + ')');
+      $wrapper.css(
+        'background-image',
+        'url(' + poster + '.' + posterType + ')'
+      );
     }
 
     // If a parent element has a static position, make it relative
@@ -306,11 +311,19 @@
 
       $video = vide.$video = $('<video>' + sources + '</video>');
     } else {
-      $video = vide.$video = $('<video>' +
-        '<source src="' + path + '.mp4" type="video/mp4">' +
-        '<source src="' + path + '.webm" type="video/webm">' +
-        '<source src="' + path + '.ogv" type="video/ogg">' +
-        '</video>');
+      $video = vide.$video = $(
+        '<video>' +
+          '<source src="' +
+          path +
+          '.mp4" type="video/mp4">' +
+          '<source src="' +
+          path +
+          '.webm" type="video/webm">' +
+          '<source src="' +
+          path +
+          '.ogv" type="video/ogg">' +
+          '</video>'
+      );
     }
 
     // https://github.com/VodkaBears/Vide/issues/110
@@ -325,42 +338,44 @@
           muted: settings.muted,
           defaultMuted: settings.muted,
           playbackRate: settings.playbackRate,
-          defaultPlaybackRate: settings.playbackRate
+          defaultPlaybackRate: settings.playbackRate,
         });
     } catch (e) {
       throw new Error(NOT_IMPLEMENTED_MSG);
     }
 
     // Video alignment
-    $video.css({
-      margin: 'auto',
-      position: 'absolute',
-      'z-index': -1,
-      top: position.y,
-      left: position.x,
-      '-webkit-transform': 'translate(-' + position.x + ', -' + position.y + ')',
-      '-ms-transform': 'translate(-' + position.x + ', -' + position.y + ')',
-      '-moz-transform': 'translate(-' + position.x + ', -' + position.y + ')',
-      transform: 'translate(-' + position.x + ', -' + position.y + ')',
+    $video
+      .css({
+        margin: 'auto',
+        position: 'absolute',
+        'z-index': -1,
+        top: position.y,
+        left: position.x,
+        '-webkit-transform':
+          'translate(-' + position.x + ', -' + position.y + ')',
+        '-ms-transform': 'translate(-' + position.x + ', -' + position.y + ')',
+        '-moz-transform': 'translate(-' + position.x + ', -' + position.y + ')',
+        transform: 'translate(-' + position.x + ', -' + position.y + ')',
 
-      // Disable visibility, while loading
-      visibility: 'hidden',
-      opacity: 0
-    })
+        // Disable visibility, while loading
+        visibility: 'hidden',
+        opacity: 0,
+      })
 
-    // Resize a video, when it's loaded
-    .one('canplaythrough.' + PLUGIN_NAME, function() {
-      vide.resize();
-    })
+      // Resize a video, when it's loaded
+      .one('canplaythrough.' + PLUGIN_NAME, function() {
+        vide.resize();
+      })
 
-    // Make it visible, when it's already playing
-    .one('playing.' + PLUGIN_NAME, function() {
-      $video.css({
-        visibility: 'visible',
-        opacity: 1
+      // Make it visible, when it's already playing
+      .one('playing.' + PLUGIN_NAME, function() {
+        $video.css({
+          visibility: 'visible',
+          opacity: 1,
+        });
+        $wrapper.css('background-image', 'none');
       });
-      $wrapper.css('background-image', 'none');
-    });
 
     // Resize event is available only for 'window'
     // Use another code solutions to detect DOM elements resizing
@@ -406,17 +421,16 @@
 
     if (wrapperWidth / videoWidth > wrapperHeight / videoHeight) {
       $video.css({
-
         // +2 pixels to prevent an empty space after transformation
         width: wrapperWidth + 2,
-        height: 'auto'
+        height: 'auto',
       });
     } else {
       $video.css({
         width: 'auto',
 
         // +2 pixels to prevent an empty space after transformation
-        height: wrapperHeight + 2
+        height: wrapperHeight + 2,
       });
     }
   };
@@ -438,7 +452,7 @@
    * @type {Object}
    */
   $[PLUGIN_NAME] = {
-    lookup: []
+    lookup: [],
   };
 
   /**
@@ -471,7 +485,11 @@
 
     // Window resize event listener
     $window.on('resize.' + PLUGIN_NAME, function() {
-      for (var len = $[PLUGIN_NAME].lookup.length, i = 0, instance; i < len; i++) {
+      for (
+        var len = $[PLUGIN_NAME].lookup.length, i = 0, instance;
+        i < len;
+        i++
+      ) {
         instance = $[PLUGIN_NAME].lookup[i];
 
         if (instance && instance.settings.resizing) {
@@ -489,13 +507,14 @@
     // Add 'data-vide-bg' attribute with a path to the video without extension
     // Also you can pass options throw the 'data-vide-options' attribute
     // 'data-vide-options' must be like 'muted: false, volume: 0.5'
-    $(document).find('[data-' + PLUGIN_NAME + '-bg]').each(function(i, element) {
-      var $element = $(element);
-      var options = $element.data(PLUGIN_NAME + '-options');
-      var path = $element.data(PLUGIN_NAME + '-bg');
+    $(document)
+      .find('[data-' + PLUGIN_NAME + '-bg]')
+      .each(function(i, element) {
+        var $element = $(element);
+        var options = $element.data(PLUGIN_NAME + '-options');
+        var path = $element.data(PLUGIN_NAME + '-bg');
 
-      $element[PLUGIN_NAME](path, options);
-    });
+        $element[PLUGIN_NAME](path, options);
+      });
   });
-
 });
