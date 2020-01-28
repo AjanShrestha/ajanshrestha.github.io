@@ -5,6 +5,7 @@ const fetch = require('node-fetch');
 
 const USERNAME = 'AjanShrestha';
 const PASSWORD = process.env.PASSWORD;
+const PRODUCTION = process.env.PROD;
 const authString = `${USERNAME}:${PASSWORD}`;
 const auth = 'Basic ' + Buffer.from(authString).toString('base64');
 const CATEGORIES = {
@@ -35,54 +36,61 @@ const fetchTopics = repoName => {
 
 const getAllRepos = async () => {
   let allRepos = [];
-  let pageNum = 1;
-  while (pageNum != 0) {
-    await fetch(
-      `https://api.github.com/users/${USERNAME}/repos?type=all&sort=updated&page=${pageNum}`,
-      options
-    )
-      .then(res => res.json())
-      .then(jsonRes => {
-        console.log(jsonRes.length);
-        if (jsonRes.length) {
-          allRepos = [...allRepos, ...jsonRes];
-          pageNum++;
-        } else {
+  if (PRODUCTION) {
+    let pageNum = 1;
+    while (pageNum != 0) {
+      await fetch(
+        `https://api.github.com/users/${USERNAME}/repos?type=all&sort=updated&page=${pageNum}`,
+        options
+      )
+        .then(res => res.json())
+        .then(jsonRes => {
+          console.log(jsonRes.length);
+          if (jsonRes.length) {
+            allRepos = [...allRepos, ...jsonRes];
+            pageNum++;
+          } else {
+            pageNum = 0;
+          }
+        })
+        .catch(err => {
+          console.error(err);
           pageNum = 0;
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        pageNum = 0;
-      });
+        });
+    }
+  } else {
+    allRepos = JSON.parse(fs.readFileSync('playground/allRepos.json', 'utf-8'));
   }
-  // const allRepos = JSON.parse(
-  //   fs.readFileSync('playground/allRepos.json', 'utf-8')
-  // );
+
   return allRepos;
 };
 
-const getForkedRepos = repos =>
-  repos.filter(getForked).map(repo => ({
-    name: repo.name,
-    description: repo.description,
-    createdAt: repo.created_at,
-    language: repo.language,
-  }));
+const getRepoObj = repo => ({
+  name: repo.name,
+  description: repo.description,
+  createdAt: repo.created_at,
+  language: repo.language,
+  url: repo.html_url,
+});
+
+const getForkedRepos = repos => repos.filter(getForked).map(getRepoObj);
 const getRepoTopics = async repos => {
-  const repoTopics = {};
+  let repoTopics = {};
+  if (PRODUCTION) {
   for (let repo of ownedRepos) {
-    await fetchTopics(repo.name)
-      .then(res => res.json())
-      .then(topic => {
-        repoTopics[repo.name] = topic.names;
-      })
-      .catch(console.error);
+      await fetchTopics(repo.name)
+        .then(res => res.json())
+        .then(topic => {
+          repoTopics[repo.name] = topic.names;
+        })
+        .catch(console.error);
+    }
+    writeAllTopics(repoTopics);
+  } else {
+    repoTopics = JSON.parse(
+      fs.readFileSync('playground/allTopics.json', 'utf-8')
+    );
   }
-  writeAllTopics(repoTopics);
-  // const repoTopics = JSON.parse(
-  //   fs.readFileSync('playground/allTopics.json', 'utf-8')
-  // );
   return repoTopics;
 };
 const getOwnedReposInfo = (repos, repoTopics) => {
@@ -90,12 +98,7 @@ const getOwnedReposInfo = (repos, repoTopics) => {
   const projectRepos = [];
   repos.forEach(repo => {
     const topics = repoTopics[repo.name];
-    const repoObj = {
-      name: repo.name,
-      description: repo.description,
-      createdAt: repo.created_at,
-      language: repo.language,
-    };
+    const repoObj = getRepoObj(repo);
     if (topics.includes(CATEGORIES.projects)) {
       projectRepos.push(repoObj);
     } else {
