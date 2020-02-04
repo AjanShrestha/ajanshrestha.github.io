@@ -52,7 +52,7 @@
   "nepse-scraper": ["nodejs", "project", "web-scraping"],
   "lyricfinder_react": ["react", "css-preprocessors", "react-components", "jest-tests", "html", "bootstrap", "css", "syntax-highlighting", "learning-by-doing"],
   "django-newspaper-app": ["python", "django", "learning-by-doing"],
-  "django-blog-app-": ["django", "python", "learning-by-doing"],
+  "django-blog-app": ["django", "python", "learning-by-doing"],
   "the-nodejs-master-class": ["nodejs", "learning-by-doing"],
   "react-redux-firebase": ["react", "learning-by-doing", "firebase"],
   "create-react-app-from-scratch": ["eslint", "babel", "react", "loaders", "hmr", "learning-by-doing"],

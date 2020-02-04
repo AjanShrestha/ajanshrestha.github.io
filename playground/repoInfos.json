@@ -276,7 +276,7 @@
     "description": "Simple django blog app",
     "createdAt": "2019-12-19T16:36:28Z",
     "language": "Python",
-    "url": "https://github.com/AjanShrestha/django-blog-app-"
+    "url": "https://github.com/AjanShrestha/django-blog-app"
   }, {
     "name": "lyricfinder_react",
     "description": "A Simple React App to find lyrics. Learning to use React Context API.",
